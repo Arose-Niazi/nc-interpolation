@@ -1,0 +1,16 @@
+{
+    "name": "Interpolation Calculator",
+    "short_name": "NC Interpolation",
+    "description": "Step-by-step interpolation calculator supporting Lagrange, Newton's Divided Difference, Forward & Backward Difference, and Stirling's Formula",
+    "start_url": "/interpolation/",
+    "display": "standalone",
+    "background_color": "#f8fafc",
+    "theme_color": "#4361ee",
+    "icons": [
+        {
+            "src": "favicon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml"
+        }
+    ]
+}

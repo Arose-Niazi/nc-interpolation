@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interpolation Calculator — Lagrange, Newton, Stirling Methods | Step-by-Step Solutions</title>
+    <meta name="description" content="Free online interpolation calculator with step-by-step solutions. Supports Lagrange, Newton's Divided Difference, Forward & Backward Difference, and Stirling's Formula. Plot interpolating curves, compare methods, and export LaTeX.">
+    <meta name="keywords" content="interpolation calculator, Lagrange interpolation, Newton divided difference, forward difference, backward difference, Stirling formula, numerical methods, polynomial interpolation, difference table, step by step, numerical computing">
+    <meta name="author" content="Arose Niazi">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://nc.arose-niazi.me/interpolation/">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Interpolation Calculator — Step-by-Step Solutions">
+    <meta property="og:description" content="Free online calculator for Lagrange, Newton, and Stirling interpolation with detailed step-by-step solutions, difference tables, and interactive plots.">
+    <meta property="og:url" content="https://nc.arose-niazi.me/interpolation/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="NC Interpolation">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Interpolation Calculator — Step-by-Step Solutions">
+    <meta name="twitter:description" content="Free online calculator for Lagrange, Newton, and Stirling interpolation with step-by-step solutions and interactive plots.">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4361ee">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="NC Interp">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="favicon.svg">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Interpolation Calculator",
+        "url": "https://nc.arose-niazi.me/interpolation/",
+        "description": "Free online interpolation calculator with step-by-step solutions. Supports Lagrange, Newton's Divided Difference, Forward & Backward Difference, and Stirling's Formula.",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "author": { "@type": "Person", "name": "Arose Niazi", "url": "https://arose-niazi.me" },
+        "educationalLevel": "University",
+        "about": {
+            "@type": "Thing",
+            "name": "Polynomial Interpolation",
+            "description": "Methods for constructing polynomials that pass through given data points"
+        }
+    }
+    </script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css?v=1">
+
+    <!-- Math.js from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.2.1/math.min.js" defer></script>
+    <!-- App -->
+    <script src="app.js?v=1" defer></script>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="https://nc.arose-niazi.me/" class="site-title-link">
+                <h1 class="site-title">Interpolation<span>Calculator</span></h1>
+            </a>
+            <div class="header-actions">
+                <button id="history-toggle-btn" type="button" aria-label="Toggle history panel">History</button>
+                <button id="theme-toggle" type="button" aria-label="Toggle dark mode">🌙</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="primary-area">
+
+            <!-- Input Card -->
+            <section class="card" aria-label="Data input">
+                <h2 class="card-title">Data Points</h2>
+
+                <!-- Controls -->
+                <div class="controls-row">
+                    <div class="control-group">
+                        <label for="num-points">Points</label>
+                        <select id="num-points">
+                            <option value="3">3</option>
+                            <option value="4" selected>4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="method-select">Method</label>
+                        <select id="method-select">
+                            <option value="lagrange">Lagrange</option>
+                            <option value="newton-divided">Newton Divided Diff.</option>
+                            <option value="newton-forward">Newton Forward Diff.</option>
+                            <option value="newton-backward">Newton Backward Diff.</option>
+                            <option value="stirling">Stirling's Formula</option>
+                            <option value="auto">Auto-Detect</option>
+                        </select>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="compare-toggle">
+                        <label for="compare-toggle">Compare methods</label>
+                    </div>
+
+                    <div class="control-group" id="compare-method-wrapper">
+                        <label for="compare-method-select">Compare with</label>
+                        <select id="compare-method-select">
+                            <option value="lagrange">Lagrange</option>
+                            <option value="newton-divided" selected>Newton Divided Diff.</option>
+                            <option value="newton-forward">Newton Forward Diff.</option>
+                            <option value="newton-backward">Newton Backward Diff.</option>
+                            <option value="stirling">Stirling's Formula</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="spacing-note" class="method-note"></div>
+
+                <!-- Data Point Inputs -->
+                <div class="data-input-section">
+                    <div class="data-table-wrapper">
+                        <table id="data-table" class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>x</th>
+                                    <th>y = f(x)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="data-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Interpolation Value -->
+                <div class="interp-value-section">
+                    <label for="interp-x">Find f(x) at x =</label>
+                    <input type="text" id="interp-x" class="interp-input" placeholder="e.g. 2.5">
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="btn-row">
+                    <button id="calculate-btn" class="btn btn-primary" type="button">Calculate</button>
+                    <button id="example-btn" class="btn btn-secondary" type="button">Example</button>
+                    <button id="clear-btn" class="btn btn-secondary" type="button">Clear</button>
+                    <button id="import-toggle-btn" class="btn btn-secondary" type="button">Import</button>
+                </div>
+
+                <!-- Import Area -->
+                <div id="import-section">
+                    <textarea id="import-text" placeholder="Paste data here. One point per line: x y (or x,y or x\ty)&#10;Example:&#10;1 2&#10;2 5&#10;3 10&#10;4 17"></textarea>
+                    <button id="import-btn" class="btn btn-small btn-secondary" type="button">Import Data</button>
+                </div>
+
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.75rem;">
+                    Tip: Press <kbd style="background:var(--bg-input);padding:1px 5px;border-radius:3px;border:1px solid var(--border-color);font-size:0.7rem;">Ctrl+Enter</kbd> to calculate
+                </p>
+            </section>
+
+            <!-- Plot -->
+            <section id="plot-section" class="card" aria-label="Interpolation plot" style="display:none;">
+                <h2 class="card-title">Plot</h2>
+                <div class="plot-container">
+                    <canvas id="plot-canvas" width="800" height="400"></canvas>
+                </div>
+            </section>
+
+            <!-- Output -->
+            <section id="output" aria-label="Calculation results"></section>
+        </div>
+
+        <!-- History Panel -->
+        <aside id="history-panel">
+            <div class="card">
+                <h2 class="card-title">
+                    History
+                    <button id="clear-history-btn" class="btn btn-small btn-secondary" type="button">Clear</button>
+                </h2>
+                <div id="history-list"></div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <span>&copy; 2022&ndash;2026 Arose Niazi</span>
+            <nav class="footer-links" aria-label="Footer links">
+                <a href="https://nc.arose-niazi.me/">LU Decomposition</a>
+                <a href="https://github.com/Arose-Niazi/nc-interpolation" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a href="https://arose-niazi.me" target="_blank" rel="noopener noreferrer">Author</a>
+            </nav>
+        </div>
+    </footer>
+
+</body>
+</html>
